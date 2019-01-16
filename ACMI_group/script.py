@@ -10,7 +10,6 @@ def main(arg = None):
     # Initialises each member of this group as per the saved Parameter()s
     for memberInfo in lookup_parameter('members') or []:
         initMember(memberInfo)   
-        initStatusSupport(
 
 # Parameters that appear in the parameter dialog. Others can be addded and taken away.
 # Any changes must also be added to the initMeber() function.
@@ -36,7 +35,7 @@ param_members = Parameter({'title': 'Members', 'schema': {'type': 'array', 'item
 
    }},
    'Status': {'title': 'Status', 'type': 'object', 'order': 6, 'properties': {
-       'status': {'type': 'boolean', 'order': 3, 'title': 'pause'},
+       'status': {'type': 'boolean', 'order': 3, 'title': 'status'},
    }},
 }}}})
 
@@ -145,54 +144,52 @@ def initMember(memberInfo):
             print("Adding Status remote event")
             remote_event_title = memberInfo.get('status') + " Status"
             remote_event_metadata = None #{'title': remote_event_title,'group': 'Members\' "%s"' % remote_event_title, 'schema': {'type': 'boolean'}}
-            remote_events_list['video_resume'].append(create_remote_event(remote_event_title , remote_event_metadata, memberInfo.get('name'), 'status'))
+            remote_events_list['status'].append(create_remote_event(remote_event_title , remote_event_metadata, memberInfo.get('name'), 'status'))
 
 
 def initSignalSupport(name, memberInfo, signalName, states):
-    # look up the members structure (assume
-    members = getMembersInfoOrRegister(signalName, name)
-  
-  
-    # establish local signals if haven't done so already
-    signal = lookup_local_event('signalName')
-    if(signal == None):        
-        signal, created_local_signal = initSignal(signalName, mode, states)
-    else:
-        created_local_signal = lookup_local_event('signalName')
-
-    # establish a remote signal to receive status
-    localMemberSignal = Event(name + ": " + signalName, {'title': + name + ": " + signalName, 'group': signalName, 'order': next_seq(), 'schema': {'type': 'string', 'enum': states}})
-            
-    def aggregateMemberStatus():
-        aggregateLevel = 0
-        aggregateMessage = 'OK'
-    
-        
-      for memberName in members:      
-          memberStatus = lookup_local_event('Status') or []
-      
-          memberLevel = memberStatus.get('level')
-          if memberLevel > aggregateLevel:        
-              aggregateLevel = memberLevel
-      
-              memberMessage = memberStatus.get('message')
-              if memberLevel > 0:
-                  if isBlank(memberMessage):
-                  msgs.append(memberName)
-              else:
-                  msgs.append(memberName + ": " + memberMessage)
-          
-      # for composing the aggegate message at the end
-      msgs = []
-      if(len(msgs) > 0):
-        aggregateMessage = ', '.join(msgs)
-          
-      selfStatusSignal.emit({'level': aggregateLevel, 'message': aggregateMessage})
-      
-      memberStatusSignal.addEmitHandler(lambda arg: aggregateMemberStatus())
-  
-  def handleRemoteEvent(arg):
-      memberStatusSignal.emit(arg)
+    print 'status support not yet implemented'
+#    # look up the members structure (assume
+#    members = getMembersInfoOrRegister(signalName, name)
+#  
+#  
+#    # establish local signals if haven't done so already
+#    signal = lookup_local_event('signalName')
+#    if(signal == None):        
+#        signal, created_local_signal = initSignal(signalName, mode, states)
+#    else:
+#        created_local_signal = lookup_local_event('signalName')
+#
+#    # establish a remote signal to receive status
+#    localMemberSignal = Event(name + ": " + signalName, {'title': + name + ": " + signalName, 'group': signalName, 'order': next_seq(), 'schema': {'type': 'string', 'enum': states}})
+#            
+#    def aggregateMemberStatus():
+#        aggregateLevel = 0
+#        aggregateMessage = 'OK'
+#    
+#        
+#        for memberName in members:      
+#            memberStatus = lookup_local_event('Status') or []
+#      
+#            memberLevel = memberStatus.get('level')
+#            if memberLevel > aggregateLevel:        
+#                aggregateLevel = memberLevel
+#      
+#                memberMessage = memberStatus.get('message')
+#                if(memberLevel > 0):
+#                    msgs.append(memberName)
+#                else:
+#                    msgs.append(memberName + ": " + memberMessage)
+#          
+#      # for composing the aggegate message at the end
+#        msgs = []
+#        if(len(msgs) > 0):
+#            aggregateMessage = ', '.join(msgs)
+#            selfStatusSignal.emit({'level': aggregateLevel, 'message': aggregateMessage})
+#            memberStatusSignal.addEmitHandler(lambda arg: aggregateMemberStatus())
+#  
+#    def handleRemoteEvent(arg):
+#        memberStatusSignal.emit(arg)
 
                           
 ### Local actions this Node provides
@@ -261,12 +258,7 @@ def power_off(arg = None):
     print 'Action Power:Off requested.'
     for remote_action in remote_actions_list['power_off']:
         remote_action.call()
-        
-@local_event{'group': 'Status', 'title': 'Status'})
-def status(arg = None):
-    print 'Action Power:Off requested.'
-    for remote_event in remote_events_list['status']:
-        remote_event.call()
+
 
 ### Functions used by this Node
 #none
