@@ -1,4 +1,4 @@
-'''Exhibit Node'''
+'''ACMI Group Node'''
 
 
 ### Libraries required by this Node
@@ -29,13 +29,16 @@ param_members = Parameter({'title': 'Members', 'schema': {'type': 'array', 'item
        'on': {'type': 'boolean', 'order': 1, 'title': 'on'},
        'off': {'type': 'boolean', 'order': 2, 'title': 'off'},
    }},
-   'Video': {'title': 'Video', 'type': 'object', 'order': 5, 'properties': {
-       'pause': {'type': 'boolean', 'order': 3, 'title': 'pause'},
-       'resume': {'type': 'boolean', 'order': 3, 'title': 'resume'},
+   'Content': {'title': 'Content', 'type': 'object', 'order': 5, 'properties': {
+       'pause': {'type': 'boolean', 'order': 1, 'title': 'pause'},
+       'resume': {'type': 'boolean', 'order': 2, 'title': 'resume'},
 
    }},
-   'Status': {'title': 'Status', 'type': 'object', 'order': 6, 'properties': {
-       'status': {'type': 'boolean', 'order': 3, 'title': 'status'},
+   'Lighting': {'title': 'Lighting', 'type': 'object', 'order': 6, 'properties': {
+       'intensity': {'type': 'boolean', 'order': 1, 'title': 'intensity'},
+   }},
+   'Status': {'title': 'Status', 'type': 'object', 'order': 7, 'properties': {
+       'status': {'type': 'boolean', 'order': 1, 'title': 'status'},
    }},
 }}}})
 
@@ -48,16 +51,21 @@ remote_actions_list['audio_volume_up'] = []
 remote_actions_list['audio_volume_down'] = []
 remote_actions_list['display_on'] = []
 remote_actions_list['display_off'] = []
-remote_actions_list['video_pause'] = []
-remote_actions_list['video_resume'] = []
+remote_actions_list['content_pause'] = []
+remote_actions_list['content_resume'] = []
 remote_actions_list['power_reboot'] = []
 remote_actions_list['power_on'] = []
 remote_actions_list['power_off'] = []
+remote_actions_list['lighting_intensity_up'] = []
+remote_actions_list['lighting_intensity_down'] = []
 
 # Initialises the remote events dict list
 remote_events_list = {}
 remote_events_list['status'] = []
 
+
+local_events_list = {}
+local_events_list['status'] = []
 
 def initMember(memberInfo):
     name = memberInfo['name']
@@ -68,130 +76,104 @@ def initMember(memberInfo):
         if(memberInfo.get('Power').get('reboot')):
             print("Adding Power:reboot remote action")
             remote_action_title = memberInfo.get('name') + " Power Reboot"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
+            remote_action_metadata = None
             remote_actions_list['power_reboot'].append(create_remote_action(remote_action_title , remote_action_metadata, suggestedNode=memberInfo.get('name'), suggestedAction='power_reboot'))
     
     if(memberInfo.get('Power') != None):                 
         if(memberInfo.get('Power').get('on')):
             print("Adding Power:on remote action")
             remote_action_title = memberInfo.get('name') + " Power On"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
+            remote_action_metadata = None 
             remote_actions_list['power_on'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'power_on'))
 
     if(memberInfo.get('Power') != None):         
         if(memberInfo.get('Power').get('off')):
             print("Adding Power:off remote action")
             remote_action_title = memberInfo.get('name') + " Power Off"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
+            remote_action_metadata = None 
             remote_actions_list['power_off'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'power_off'))
     
     if(memberInfo.get('Audio') != None):
         if(memberInfo.get('Audio').get('mute')):
             print("Adding Audio:mute remote action")
             remote_action_title = memberInfo.get('name') + " Audio Mute"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
+            remote_action_metadata = None 
             remote_actions_list['audio_mute'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'audio_mute'))
     
     if(memberInfo.get('Audio') != None):
         if(memberInfo.get('Audio').get('unmute')):
             print("Adding Audio:unmute remote action")
             remote_action_title = memberInfo.get('name') + " Audio Unmute"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
+            remote_action_metadata = None 
             remote_actions_list['audio_unmute'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'audio_unmute'))
     
     if(memberInfo.get('Audio') != None):
         if(memberInfo.get('Audio').get('volume')):  
             print("Adding Audio:volume_up remote action")
-            remote_action_title = memberInfo.get('name') + " Audio Volume down 5%"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
+            remote_action_title = memberInfo.get('name') + " Audio Volume Down 5%"
+            remote_action_metadata = None 
             remote_actions_list['audio_volume_down'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'audio_volume_up'))
             
             print("Adding Audio:volume_down remote action")
-            remote_action_title = memberInfo.get('name') + " Audio Volume up 5%"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
+            remote_action_title = memberInfo.get('name') + " Audio Volume Up 5%"
+            remote_action_metadata = None
             remote_actions_list['audio_volume_up'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'audio_volume_down'))
     
     if(memberInfo.get('Display') != None):
         if(memberInfo.get('Display').get('on')):
             print("Adding Display:on remote action")
             remote_action_title = memberInfo.get('name') + " Display On"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
+            remote_action_metadata = None 
             remote_actions_list['display_on'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'display_on'))
     
     if(memberInfo.get('Display') != None):
         if(memberInfo.get('Display').get('off')):
             print("Adding Display:off remote action")
             remote_action_title = memberInfo.get('name') + " Display Off"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
+            remote_action_metadata = None
             remote_actions_list['display_off'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'display_off'))
     
-    if(memberInfo.get('Video') != None):
-        if(memberInfo.get('Video').get('pause')):
-            print("Adding Video:pause remote action")
+    if(memberInfo.get('Content') != None):
+        if(memberInfo.get('Content').get('pause')):
+            print("Adding Content:pause remote action")
             remote_action_title = memberInfo.get('name') + " Pause"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
-            remote_actions_list['video_pause'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'video_pause'))
+            remote_action_metadata = None
+            remote_actions_list['content_pause'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'content_pause'))
     
-    if(memberInfo.get('Video') != None):
-        if(memberInfo.get('Video').get('resume')):
-            print("Adding Video:resume remote action")
+    if(memberInfo.get('Content') != None):
+        if(memberInfo.get('Content').get('resume')):
+            print("Adding Content:resume remote action")
             remote_action_title = memberInfo.get('name') + " Resume"
-            remote_action_metadata = None #{'title': remote_action_title,'group': 'Members\' "%s"' % remote_action_title, 'schema': {'type': 'boolean'}}
-            remote_actions_list['video_resume'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'video_resume'))
+            remote_action_metadata = None 
+            remote_actions_list['content_resume'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'content_resume'))
 
+    if(memberInfo.get('Lighting') != None):
+        if(memberInfo.get('Lighting').get('intensity')):
+            print("Adding Lighting:intensity_up remote action")
+            remote_action_title = memberInfo.get('name') + " Lighting Intensity Up 5%"
+            remote_action_metadata = None 
+            remote_actions_list['lighting_intensity_up'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'lighting_intensity_up'))
+    
+    if(memberInfo.get('Lighting') != None):
+        if(memberInfo.get('Lighting').get('intensity')):
+            print("Adding Lighting:intensity_down remote action")
+            remote_action_title = memberInfo.get('name') + " Lighting Intensity Down 5%"
+            remote_action_metadata = None 
+            remote_actions_list['lighting_intensity_down'].append(create_remote_action(remote_action_title , remote_action_metadata, memberInfo.get('name'), 'lighting_intensity_down'))
+
+            
     if(memberInfo.get('Status') != None):
-        if(memberInfo.get('Status').get('resume')):
+        if(memberInfo.get('Status').get('status')):
             print("Adding Status remote event")
-            remote_event_title = memberInfo.get('status') + " Status"
-            remote_event_metadata = None #{'title': remote_event_title,'group': 'Members\' "%s"' % remote_event_title, 'schema': {'type': 'boolean'}}
-            remote_events_list['status'].append(create_remote_event(remote_event_title , remote_event_metadata, memberInfo.get('name'), 'status'))
+            remote_event_title = memberInfo.get('name') + " Status" 
+            remote_event_metadata = {'Group': 'Status', 'schema': {'title': remote_event_title, 'type': 'array', 'items': {'type': 'object', 'properties': {
+   'message': {'type': 'string'},
+   'time': {'type': 'string'}
+   }}}}
+            #local_events_list['status'].append(create_local_event(remote_event_title, remote_event_metadata))
+            remote_events_list['status'].append(create_remote_event(remote_event_title , get_status,remote_event_metadata,  memberInfo.get('name'), 'Get Status'))
 
-
-def initSignalSupport(name, memberInfo, signalName, states):
-    print 'status support not yet implemented'
-#    # look up the members structure (assume
-#    members = getMembersInfoOrRegister(signalName, name)
-#  
-#  
-#    # establish local signals if haven't done so already
-#    signal = lookup_local_event('signalName')
-#    if(signal == None):        
-#        signal, created_local_signal = initSignal(signalName, mode, states)
-#    else:
-#        created_local_signal = lookup_local_event('signalName')
-#
-#    # establish a remote signal to receive status
-#    localMemberSignal = Event(name + ": " + signalName, {'title': + name + ": " + signalName, 'group': signalName, 'order': next_seq(), 'schema': {'type': 'string', 'enum': states}})
-#            
-#    def aggregateMemberStatus():
-#        aggregateLevel = 0
-#        aggregateMessage = 'OK'
-#    
-#        
-#        for memberName in members:      
-#            memberStatus = lookup_local_event('Status') or []
-#      
-#            memberLevel = memberStatus.get('level')
-#            if memberLevel > aggregateLevel:        
-#                aggregateLevel = memberLevel
-#      
-#                memberMessage = memberStatus.get('message')
-#                if(memberLevel > 0):
-#                    msgs.append(memberName)
-#                else:
-#                    msgs.append(memberName + ": " + memberMessage)
-#          
-#      # for composing the aggegate message at the end
-#        msgs = []
-#        if(len(msgs) > 0):
-#            aggregateMessage = ', '.join(msgs)
-#            selfStatusSignal.emit({'level': aggregateLevel, 'message': aggregateMessage})
-#            memberStatusSignal.addEmitHandler(lambda arg: aggregateMemberStatus())
-#  
-#    def handleRemoteEvent(arg):
-#        memberStatusSignal.emit(arg)
-
-                          
+     
 ### Local actions this Node provides
 @local_action({'group': 'Display', 'title': 'display on'})
 def dsiplay_on(arg = None):
@@ -259,8 +241,35 @@ def power_off(arg = None):
     for remote_action in remote_actions_list['power_off']:
         remote_action.call()
 
+@local_action({'group': 'Lighting', 'title': 'intensity up 5%'})
+def lighting_intensity_up(arg = None):
+    print 'Action Lighting:intensity_up requested.'
+    for remote_action in remote_actions_list['lighting_intensity_up']:
+        remote_action.call()
+        
+@local_action({'group': 'Lighting', 'title': 'intensity down 5%'})
+def lighting_intensity_down(arg = None):
+    print 'Action Lighting:intensity_down requested.'
+    for remote_action in remote_actions_list['lighting_intensity_down']:
+        remote_action.call()
+        
+metadata = {'Group': 'Status', 'schema': {'title': 'Group Status', 'type': 'array', 'items': {'type': 'object', 'properties': {
+   'message': {'type': 'string'},
+   'time': {'type': 'string'}
+   }}}}
 
-### Functions used by this Node
-#none
+create_local_event('Group Status', metadata)
 
-
+def get_status(arg = None):
+    print 'Event Status:Status requested.'
+    message = ''
+    for remote_event in remote_events_list['status']:
+        if(remote_event.getArg().get('message') != 'ok'):
+            message += 'Error: ' + remote_event.getArg().get('message')
+    
+    if(message != ''):
+        aggregate_message = {'message': message, 'time': str(date_now())}
+        lookup_local_event('Group Status').emit(aggregate_message)
+    else:
+        aggregate_message = {'message': 'ok', 'time': str(date_now())}
+        lookup_local_event('Group Status').emit(aggregate_message)
