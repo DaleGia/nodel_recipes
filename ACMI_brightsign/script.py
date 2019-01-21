@@ -2,16 +2,14 @@
 
 ### Libraries required by this Node
 import socket
-
-
-
-### Parameters used by this Node
+import os
+### Parameters used by this Node. These will be the options available to the user.
 param_ipAddress = Parameter('{"title":"IP Address","desc":"The IP address","schema":{"type":"string"}}')
 PORT = 5000
 
 
 
-### Functions used by this Node
+### Functions used by this Node to perform whatever tasks it needs to do.
 def send_udp_string(msg):
   #open socket
   sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -26,7 +24,8 @@ def send_udp_string(msg):
 
 
 
-
+#Local actions. Group nodes will call these local_actions when remotely binded to them. These actions
+#are the functions that actually 'do something'
 @local_action({'group': 'Video', 'title': 'Resume'})
 def display_resume(arg = None):
   print 'Action Video:RESUME requested.'
@@ -72,12 +71,31 @@ def power_reboot(arg = None):
   print 'Action Audio:REBOOT requested.'
   send_udp_string('REBOOT')
 
-### Local events this Node provides
-#local_event_Error = LocalEvent('{"title":"Error","desc":"Error","group":"General"}')
+### Local events this Node provides. The only event should be the status at ACMI.
+# This status will be a message. If all is okay, the status message will be 'ok'.
+# If something is wrong, the message will contain what is wrong with the device. 
+create_local_event('Get Status', {'Group': 'Status', 'schema': {'title': 'status', 'type': 'object', 'properties':{
+      'message': {'type': 'string'},
+      'time': {'type': 'string'}
+}}})
+Timer(lambda: lookup_local_event('Get Status').emit(get_status()), 60, 1)
 
+# This function builds the status that will be emitted every 60 seconds. If multiple statuses are required,
+# this function should aggergate the messages if multple things are wrong with the devices. A case type statement
+# should be built and if all statueses are good, the message 'ok' should be returned.
+def get_status(arg = None):
+    if(param_ipAddress != None):
+        ping_response = os.system("ping -n 1 " + param_ipAddress)
+    else:
+        return {'message': 'No IP Address specified for Brightsign', 'time': str(date_now())}
+    if(ping_response == 0):
+        return {'message': 'ok', 'time': str(date_now())}
+    else:
+        return {'message': 'Cannot reach brightsign with ping', 'time': str(date_now())}
 
 
 ### Main
 def main(arg = None):
   # Start your script here.
   print 'Nodel script started.'
+ 
