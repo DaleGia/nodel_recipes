@@ -74,11 +74,14 @@ def power_reboot(arg = None):
 ### Local events this Node provides. The only event should be the status at ACMI.
 # This status will be a message. If all is okay, the status message will be 'ok'.
 # If something is wrong, the message will contain what is wrong with the device. 
-create_local_event('Get Status', {'Group': 'Status', 'schema': {'title': 'status', 'type': 'object', 'properties':{
+local_status_name = os.path.basename(os.getcwd()) + ' Status'
+
+create_local_event(local_status_name, {'Group': 'Status', 'schema': {'title': 'status', 'type': 'object', 'properties':{
+      'status_code': {'type': 'string'},
       'message': {'type': 'string'},
       'time': {'type': 'string'}
 }}})
-Timer(lambda: lookup_local_event('Get Status').emit(get_status()), 60, 1)
+Timer(lambda: lookup_local_event(local_status_name).emit(get_status()), 60, 1)
 
 # This function builds the status that will be emitted every 60 seconds. If multiple statuses are required,
 # this function should aggergate the messages if multple things are wrong with the devices. A case type statement
@@ -87,11 +90,11 @@ def get_status(arg = None):
     if(param_ipAddress != None):
         ping_response = os.system("ping -n 1 " + param_ipAddress)
     else:
-        return {'message': 'No IP Address specified for Brightsign', 'time': str(date_now())}
+        return {'status_code': '1', 'message': 'No IP Address specified for: ' + os.path.basename(os.getcwd()), 'time': str(date_now())}
     if(ping_response == 0):
-        return {'message': 'ok', 'time': str(date_now())}
+        return {'status_code': '0','message': 'ok', 'time': str(date_now())}
     else:
-        return {'message': 'Cannot reach brightsign with ping', 'time': str(date_now())}
+        return {'status_code': '1', 'message': 'Cannot reach ' + os.path.basename(os.getcwd()) + ' with ping at ' + param_ipAddress, 'time': str(date_now())}
 
 
 ### Main
