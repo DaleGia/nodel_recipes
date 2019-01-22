@@ -15,7 +15,7 @@ def main(arg = None):
 # Parameters that appear in the parameter dialog. Others can be addded and taken away.
 # Any changes must also be added to the initMeber() function.
 param_members = Parameter({'title': 'Members', 'schema': {'type': 'array', 'items': {'type': 'object', 'properties': {
-   'name': {'title': 'Node', 'type': 'string', 'order': 1},
+   'name': {'title': 'Node', 'type': 'string', 'required': True, 'order': 1},
    'Power': {'title': 'Power', 'type': 'object', 'order': 2, 'properties': {
        'reboot': {'type': 'boolean', 'order': 1, 'title': 'reboot'},
        'on': {'type': 'boolean', 'order': 2, 'title': 'on'},
