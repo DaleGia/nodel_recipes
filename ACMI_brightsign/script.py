@@ -26,14 +26,14 @@ def send_udp_string(msg):
 
 #Local actions. Group nodes will call these local_actions when remotely binded to them. These actions
 #are the functions that actually 'do something'
-@local_action({'group': 'Video', 'title': 'Resume'})
+@local_action({'group': 'Content', 'title': 'Resume'})
 def display_resume(arg = None):
-  print 'Action Video:RESUME requested.'
+  print 'Action Content:RESUME requested.'
   send_udp_string('RESUME')
 
-@local_action({'group': 'Video', 'title': 'Pause'})
+@local_action({'group': 'Content', 'title': 'Pause'})
 def display_pause(arg = None):
-  print 'Action Video:PAUSE requested.'
+  print 'Action Content:PAUSE requested.'
   send_udp_string('PAUSE')
   
 @local_action({'group': 'Audio', 'title': 'Mute'})
