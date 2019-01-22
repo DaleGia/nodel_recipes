@@ -22,45 +22,24 @@ _split_re  = re.compile("\s+")
 _cron_re = re.compile(r"^(?:[0-9-,*/]+\s){4}[0-9-,*/]$")
 _sched_seq = ('minute', 'hour', 'day', 'month', 'day_of_week')
 
-local_event_AllOn = LocalEvent('{ "title" : "All On", "group" : "Input" }')
-local_event_AllOff = LocalEvent('{ "title" : "All Off", "group" : "Input" }')
-local_event_Error = LocalEvent('{ "title" : "Error", "group" : "General" }')
+minute = [0, 10, 20, 30, 40, 50] 
+hour = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ,11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23]
+day = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+month = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-param_schedule = Parameter('{ "title" : "Schedule", "group" : "Schedule", "schema": { "type": "array", "title": "Schedule", "required": false, "items": { "type": "object", "required": false, "properties": 
-                           { "cron": 
-                            { "type": "string", "format": "cron", "required": true, "title": "Cron", "desc": "Format: <minute> <hour> <day> <month> <day of week>" }, 
-                            "signal": { "type": "string", "required": true, "title": "Signal" }, 
-                            "args": { "type": "string", "required": false, "title": "Args" } } } } }')
-
-
-param_members = Parameter({'title': 'Members', 'schema': {'type': 'array', 'items': {'type': 'object', 'properties': {
-   'name': {'title': 'Node', 'type': 'string', 'order': 1},
-   'Power': {'title': 'Power', 'type': 'object', 'order': 2, 'properties': {
-       'reboot': {'type': 'boolean', 'order': 1, 'title': 'reboot'},
-       'on': {'type': 'boolean', 'order': 2, 'title': 'on'},
-       'off': {'type': 'boolean', 'order': 3, 'title': 'off'},
+actions = ['audio_mute', 'audio_unmute', 'audio_volume_down', 'audio_volume_up', 'display_off', 'display_on', 'content_pause', 'content_resume', 'power_on', 'power_off', 'power_reboot'] 
+param_schedule = Parameter({'title': 'Scheduler', 'schema': {'type': 'array', 'items': {'type': 'object', 'properties': {
+   'name': {'title': 'Node', 'required': True, 'type': 'string', 'order': 1},
+   'Date': {'title': 'Date', 'type': 'object', 'order': 2, 'properties': {
+       'Minute': {'type': 'string', 'required': True, 'enum': minute, 'order': 1},
+       'Hour': {'type': 'string', 'required': True, 'enum': hour, 'order': 2},
+       'Day': {'type': 'string', 'required': False, 'enum': day, 'order': 3},
+       'Month': {'type': 'string', 'required': False, 'enum': month, 'order': 4},
+       'Reoccuring': {'type': 'boolean', 'order': 5},
    }},
-   'Audio': {'title': 'Audio', 'type': 'object', 'order': 3, 'properties': {
-       'mute': {'type': 'boolean', 'order': 1, 'title': 'mute'},
-       'unmute': {'type': 'boolean', 'order': 2, 'title': 'unmute'},
-       'volume': {'type': 'boolean', 'order': 3, 'title': 'volume'},
-   }},
-   'Display': {'title': 'Display', 'type': 'object', 'order': 4, 'properties': {
-       'on': {'type': 'boolean', 'order': 1, 'title': 'on'},
-       'off': {'type': 'boolean', 'order': 2, 'title': 'off'},
-   }},
-   'Content': {'title': 'Content', 'type': 'object', 'order': 5, 'properties': {
-       'pause': {'type': 'boolean', 'order': 1, 'title': 'pause'},
-       'resume': {'type': 'boolean', 'order': 2, 'title': 'resume'},
-
-   }},
-   'Lighting': {'title': 'Lighting', 'type': 'object', 'order': 6, 'properties': {
-       'intensity': {'type': 'boolean', 'order': 1, 'title': 'intensity'},
-   }},
-   'Status': {'title': 'Status', 'type': 'object', 'order': 7, 'properties': {
-       'status': {'type': 'boolean', 'order': 1, 'title': 'status'},
-   }},
+   'Action': {'title': 'Action', 'required': True, 'type': 'string', 'enum': actions, 'order': 3}
 }}}})
+
 
 def main():
   sched.start()
