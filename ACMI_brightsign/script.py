@@ -1,10 +1,10 @@
-'''BrightSign UDP Node'''
+'''ACMI BrightSign UDP Node'''
 
 ### Libraries required by this Node
 import socket
 import os
 ### Parameters used by this Node. These will be the options available to the user.
-param_ipAddress = Parameter('{"title":"IP Address","desc":"The IP address","schema":{"type":"string"}}')
+param_ipAddress = Parameter('{"title":"IP Address","desc":"The IP address","schema":{"type":"string", "required": True}}')
 PORT = 5000
 
 
