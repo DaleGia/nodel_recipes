@@ -4,6 +4,7 @@
 ### Libraries required by this Node
 from time import time
 from random import randint
+import os
 
 ### Main
 def main(arg = None):
@@ -66,6 +67,16 @@ remote_events_list['status'] = []
 
 local_events_list = {}
 local_events_list['status'] = []
+
+
+local_status_name = os.path.basename(os.getcwd()) + ' Status'
+status_metadata = {'Group': 'Status', 'schema': {'title': local_status_name, 'type': 'array', 'items': {'type': 'object', 'properties': {
+   'status_code': {'type': 'string'},
+   'message': {'type': 'string'},
+   'time': {'type': 'string'}
+   }}}}
+create_local_event(local_status_name, status_metadata)
+
 
 def initMember(memberInfo):
     name = memberInfo['name']
@@ -167,14 +178,15 @@ def initMember(memberInfo):
             print("Adding Status remote event")
             remote_event_title = memberInfo.get('name') + " Status" 
             remote_event_metadata = {'Group': 'Status', 'schema': {'title': remote_event_title, 'type': 'array', 'items': {'type': 'object', 'properties': {
+   'status_code': {'type': 'string'},
    'message': {'type': 'string'},
    'time': {'type': 'string'}
    }}}}
-            #local_events_list['status'].append(create_local_event(remote_event_title, remote_event_metadata))
-            remote_events_list['status'].append(create_remote_event(remote_event_title , get_status,remote_event_metadata,  memberInfo.get('name'), 'Get Status'))
+            local_events_list['status'].append(create_local_event(remote_event_title, remote_event_metadata))
+            remote_events_list['status'].append(create_remote_event(remote_event_title , get_status,remote_event_metadata,  memberInfo.get('name'), remote_event_title))
 
-     
-### Local actions this Node provides
+        
+# Local actions this Node provides
 @local_action({'group': 'Display', 'title': 'display on'})
 def dsiplay_on(arg = None):
     print 'Action Display:on requested.'
@@ -187,13 +199,13 @@ def dsiplay_off(arg = None):
     for remote_action in remote_actions_list['display_off']:
         remote_action.call()
     
-@local_action({'group': 'Video', 'title': 'pause'})
+@local_action({'group': 'Content', 'title': 'pause'})
 def display_pause(arg = None):
     print 'Action Video:pause requested.'
     for remote_action in remote_actions_list['video_pause']:
         remote_action.call()
 
-@local_action({'group': 'Video', 'title': 'resume'})
+@local_action({'group': 'Content', 'title': 'resume'})
 def display_resume(arg = None):
     print 'Action Display:resume requested.'
     for remote_action in remote_actions_list['video_resume']:
@@ -252,24 +264,26 @@ def lighting_intensity_down(arg = None):
     print 'Action Lighting:intensity_down requested.'
     for remote_action in remote_actions_list['lighting_intensity_down']:
         remote_action.call()
-        
-metadata = {'Group': 'Status', 'schema': {'title': 'Group Status', 'type': 'array', 'items': {'type': 'object', 'properties': {
-   'message': {'type': 'string'},
-   'time': {'type': 'string'}
-   }}}}
-
-create_local_event('Group Status', metadata)
 
 def get_status(arg = None):
     print 'Event Status:Status requested.'
     message = ''
+    status = '0'
     for remote_event in remote_events_list['status']:
+        remote_content = {'status_code': remote_event.getArg().get('status'), 
+                          'message': remote_event.getArg().get('message'), 
+                          'time': remote_event.getArg().get('time')}
+
+        lookup_local_event(str(remote_event.getEvent())).emit(remote_event.getArg())
+
         if(remote_event.getArg().get('message') != 'ok'):
-            message += 'Error: ' + remote_event.getArg().get('message')
-    
+            if(message != ''):
+                message += ' && ' 
+            message += remote_event.getArg().get('message')
+            status = '1'
     if(message != ''):
-        aggregate_message = {'message': message, 'time': str(date_now())}
-        lookup_local_event('Group Status').emit(aggregate_message)
+        aggregate_message = {'status_code': status, 'message': os.path.basename(os.getcwd()) +': ' + message, 'time': str(date_now())}
+        lookup_local_event(local_status_name).emit(aggregate_message)
     else:
-        aggregate_message = {'message': 'ok', 'time': str(date_now())}
-        lookup_local_event('Group Status').emit(aggregate_message)
+        aggregate_message = {'status_code': status, 'message': 'ok', 'time': str(date_now())}
+        lookup_local_event(local_status_name).emit(aggregate_message)
