@@ -16,52 +16,52 @@ param_scheduler = Parameter({'title': 'Scheduler Name', 'schema':
 
 #Local actions. Group nodes will call these local_actions when remotely binded to them. These actions
 #are the functions that actually 'do something'
-@local_action({'group': 'Content', 'title': 'Resume'})
+@local_action({'group': 'Content', 'title': 'content_resume'})
 def content_resume(arg = None):
   print 'Action Content:RESUME requested.'
   send_udp_string('RESUME')
 
-@local_action({'group': 'Content', 'title': 'Pause'})
+@local_action({'group': 'Content', 'title': 'content_pause'})
 def content_pause(arg = None):
   print 'Action Content:PAUSE requested.'
   send_udp_string('PAUSE')
   
-@local_action({'group': 'Audio', 'title': 'Mute'})
+@local_action({'group': 'Audio', 'title': 'audio_mute'})
 def audio_mute(arg = None):
   print 'Action Audio:MUTE requested.'
   send_udp_string('MUTE')
 
-@local_action({'group': 'Audio', 'title': 'Unmute'})
+@local_action({'group': 'Audio', 'title': 'audio_unmute'})
 def audio_unmute(arg = None):
   print 'Action Audio:UNMUTE requested.'
   send_udp_string('UNMUTE')
 
-@local_action({'group': 'Audio', 'title': 'Volume up 5%'})
+@local_action({'group': 'Audio', 'title': 'audio_volume_up'})
 def audio_volume_up(arg = None):
   print 'Action Audio:VOLUP requested.'
   send_udp_string('VOLUP')
   
-@local_action({'group': 'Audio', 'title': 'Volume down 5%'})
+@local_action({'group': 'Audio', 'title': 'audio_volume_down'})
 def audio_volume_down(arg = None):
   print 'Action Audio:VOLDOWN requested.'
   send_udp_string('VOLDOWN')
   
-@local_action({'group': 'Display', 'title': 'On'})
+@local_action({'group': 'Display', 'title': 'display_on'})
 def display_on(arg = None):
   print 'Action Display:ON requested.'
   send_udp_string('ON')
   
-@local_action({'group': 'Display', 'title': 'Off'})
+@local_action({'group': 'Display', 'title': 'display_off'})
 def display_off(arg = None):
   print 'Action Display:OFF requested.'
   send_udp_string('OFF')
 
-@local_action({'group': 'Power', 'title': 'Reboot'})
+@local_action({'group': 'Power', 'title': 'power_reboot'})
 def power_reboot(arg = None):
   print 'Action Audio:REBOOT requested.'
   send_udp_string('REBOOT')
   
-@local_action({'group': 'Status', 'title': 'Get Status'})
+@local_action({'group': 'Status', 'title': 'get_status'})
 def get_status(arg = None):
   print 'Action Status:get_status requested.'
   get_status()
