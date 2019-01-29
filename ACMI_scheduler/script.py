@@ -12,7 +12,7 @@ from datetime import date
 import os
 
 # Gets list of all nodes (but not the ones running on other instances of nodel...)
-nodes = os.listdir('/opt/nodel/nodes')
+nodes = os.listdir(os.path.dirname(os.getcwd()))
 # Initialises the remote actions dict list
 remote_actions_list = {}
 remote_actions_list['audio_mute'] = []
