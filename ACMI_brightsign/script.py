@@ -5,7 +5,7 @@ import socket
 import os
 
 # Gets list of all nodes (but not the ones running on other instances of nodel...)
-nodes = os.listdir('/opt/nodel/nodes')
+nodes = os.listdir(os.path.dirname(os.getcwd()))
 
 ### Parameters used by this Node. These will be the options available to the user.
 param_ipAddress = Parameter({'title': 'IP Address', 'schema': {"type":"string", "required": True}})   
