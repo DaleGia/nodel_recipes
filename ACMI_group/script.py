@@ -7,7 +7,7 @@ from random import randint
 import os
  
 # Gets list of all nodes (but not the ones running on other instances of nodel...)
-nodes = os.listdir('/opt/nodel/nodes')
+nodes = os.listdir(os.path.dirname(os.getcwd()))
 
 # Initialises the remote actions, local_events, and remote_events dict list. These will all be stored 
 # in these arrays.
