@@ -16,67 +16,67 @@ param_scheduler = Parameter({'title': 'Scheduler Name', 'schema':
 
 #Local actions. Group nodes will call these local_actions when remotely binded to them. These actions
 #are the functions that actually 'do something'
-@local_action({'group': 'Content', 'title': 'content_resume'})
-def content_resume(arg = None):
+@local_action({'group': 'Content', 'title': 'contentResume'})
+def contentResume(arg = None):
   print 'Action Content:RESUME requested.'
   send_udp_string('RESUME')
 
-@local_action({'group': 'Content', 'title': 'content_pause'})
-def content_pause(arg = None):
+@local_action({'group': 'Content', 'title': 'contentPause'})
+def contentPause(arg = None):
   print 'Action Content:PAUSE requested.'
   send_udp_string('PAUSE')
   
-@local_action({'group': 'Audio', 'title': 'audio_mute'})
-def audio_mute(arg = None):
+@local_action({'group': 'Audio', 'title': 'audioMute'})
+def audioMute(arg = None):
   print 'Action Audio:MUTE requested.'
   send_udp_string('MUTE')
 
-@local_action({'group': 'Audio', 'title': 'audio_unmute'})
-def audio_unmute(arg = None):
+@local_action({'group': 'Audio', 'title': 'audioUnmute'})
+def audioUnmute(arg = None):
   print 'Action Audio:UNMUTE requested.'
   send_udp_string('UNMUTE')
 
-@local_action({'group': 'Audio', 'title': 'audio_volume_up'})
-def audio_volume_up(arg = None):
+@local_action({'group': 'Audio', 'title': 'audioVolumeUp'})
+def audioVolumeUp(arg = None):
   print 'Action Audio:VOLUP requested.'
   send_udp_string('VOLUP')
   
-@local_action({'group': 'Audio', 'title': 'audio_volume_down'})
-def audio_volume_down(arg = None):
+@local_action({'group': 'Audio', 'title': 'audioVolumeDown'})
+def audioVolumeDown(arg = None):
   print 'Action Audio:VOLDOWN requested.'
   send_udp_string('VOLDOWN')
   
-@local_action({'group': 'Display', 'title': 'display_on'})
-def display_on(arg = None):
+@local_action({'group': 'Display', 'title': 'displayOn'})
+def displayOn(arg = None):
   print 'Action Display:ON requested.'
   send_udp_string('ON')
   
-@local_action({'group': 'Display', 'title': 'display_off'})
-def display_off(arg = None):
+@local_action({'group': 'Display', 'title': 'displayOff'})
+def displayOff(arg = None):
   print 'Action Display:OFF requested.'
   send_udp_string('OFF')
 
-@local_action({'group': 'Power', 'title': 'power_reboot'})
-def power_reboot(arg = None):
+@local_action({'group': 'Power', 'title': 'powerReboot'})
+def powerReboot(arg = None):
   print 'Action Audio:REBOOT requested.'
   send_udp_string('REBOOT')
   
-@local_action({'group': 'Status', 'title': 'get_status'})
-def get_status(arg = None):
-  print 'Action Status:get_status requested.'
-  get_status()
+@local_action({'group': 'Status', 'title': 'getStatus'})
+def getStatus(arg = None):
+  print 'Action Status:getStatus requested.'
+  getStatus()
   
 #[0] = group, [1] = action, [2] = event/signal/action name, [3] = handler function for action
-action_events_list = [('Power', 'reboot', 'power_reboot', power_reboot),
-                      ('Audio', 'mute', 'audio_mute', audio_mute),
-                      ('Audio', 'unmute', 'audio_unmute', audio_unmute),
-                      ('Audio', 'volume_up', 'audio_volume_up', audio_volume_up),
-                      ('Audio', 'volume_down', 'audio_volume_down', audio_volume_down),
-                      ('Display', 'on', 'display_on', display_on),
-                      ('Display', 'off', 'display_off', display_off),
-                      ('Content', 'resume', 'content_resume', content_resume),
-                      ('Content', 'pause', 'content_pause', content_pause),
-                      ('Status', '', 'get_status', get_status),]
+action_events_list = [('Power', 'reboot', 'powerReboot', powerReboot),
+                      ('Audio', 'mute', 'audioMute', audioMute),
+                      ('Audio', 'unmute', 'audioUnmute', audioUnmute),
+                      ('Audio', 'volumeUp', 'audioVolumeUp', audioVolumeUp),
+                      ('Audio', 'volumeDown', 'audioVolumeDown', audioVolumeDown),
+                      ('Display', 'on', 'displayOn', displayOn),
+                      ('Display', 'off', 'displayOff', displayOff),
+                      ('Content', 'resume', 'contentResume', contentResume),
+                      ('Content', 'pause', 'contentPause', contentPause),
+                      ('Status', '', 'getStatus', getStatus),]
 
 
 ### Functions used by this Node to perform whatever tasks it needs to do.
@@ -86,7 +86,7 @@ def init_scheduler():
     for action in action_events_list:
         if(lookup_parameter('scheduler') != None):
             remote_name = action[2]
-            remote_title = os.path.basename(os.getcwd()) + "_" + remote_name
+            remote_title = os.path.basename(os.getcwd()) + remote_name
             remote_metadata = {'Group': action[0], 'title': remote_title}
             print 'Creating remote event: ' + remote_title + ' for: ' + lookup_parameter('scheduler')
             remote_events_list[remote_name].append(remote_title)
@@ -118,7 +118,7 @@ def send_udp_string(msg):
 # This function builds the status that will be emitted every 60 seconds. If multiple statuses are required,
 # this function should aggergate the messages if multple things are wrong with the devices. A case type statement
 # should be built and if all statueses are good, the message 'ok' should be returned.
-def get_status(arg = None):
+def getStatus(arg = None):
     if(param_ipAddress != None):
         ping_response = os.system("ping -n 1 " + param_ipAddress)
     else:
@@ -131,14 +131,14 @@ def get_status(arg = None):
 ### Local events this Node provides. The only event should be the status at ACMI.
 # This status will be a message. If all is okay, the status message will be 'ok'.
 # If something is wrong, the message will contain what is wrong with the device. 
-local_status_name = os.path.basename(os.getcwd()) + '_get_status'
+local_status_name = os.path.basename(os.getcwd()) + 'getStatus'
 
 create_local_event(local_status_name, {'Group': 'Status', 'schema': {'title': local_status_name, 'type': 'object', 'properties':{
       'status_code': {'type': 'string'},
       'message': {'type': 'string'},
       'time': {'type': 'string'}
 }}})
-Timer(lambda: lookup_local_event(local_status_name).emit(get_status()), 60, 1)
+Timer(lambda: lookup_local_event(local_status_name).emit(getStatus()), 2, 1)
 
 
 ### Main

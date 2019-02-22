@@ -12,61 +12,25 @@ nodes = os.listdir(os.path.dirname(os.getcwd()))
 # Initialises the remote actions, local_events, and remote_events dict list. These will all be stored 
 # in these arrays.
 remote_actions_list = {}
-remote_actions_list['audio_mute'] = []
-remote_actions_list['audio_unmute'] = []
-remote_actions_list['audio_volume_up'] = []
-remote_actions_list['audio_volume_down'] = []
-remote_actions_list['display_on'] = []
-remote_actions_list['display_off'] = []
-remote_actions_list['content_pause'] = []
-remote_actions_list['content_resume'] = []
-remote_actions_list['power_reboot'] = []
-remote_actions_list['power_on'] = []
-remote_actions_list['power_off'] = []
-remote_actions_list['lighting_intensity_up'] = []
-remote_actions_list['lighting_intensity_down'] = []
-remote_actions_list['get_status'] = []
-remote_actions_list['all_on'] = []
-remote_actions_list['all_off'] = []
+remote_actions_list['audioMute'] = []
+remote_actions_list['audioUnmute'] = []
+remote_actions_list['audioVolumeUp'] = []
+remote_actions_list['audioVolumeDown'] = []
+remote_actions_list['displayOn'] = []
+remote_actions_list['displayOff'] = []
+remote_actions_list['contentPause'] = []
+remote_actions_list['contentResume'] = []
+remote_actions_list['powerReboot'] = []
+remote_actions_list['powerOn'] = []
+remote_actions_list['powerOff'] = []
+remote_actions_list['lightingIntensityUp'] = []
+remote_actions_list['lightingIntensityDown'] = []
+remote_actions_list['getStatus'] = []
+remote_actions_list['allOn'] = []
+remote_actions_list['allOff'] = []
 
-remote_events_list = {}
-remote_events_list['audio_mute'] = []
-remote_events_list['audio_unmute'] = []
-remote_events_list['audio_volume_up'] = []
-remote_events_list['audio_volume_down'] = []
-remote_events_list['display_on'] = []
-remote_events_list['display_off'] = []
-remote_events_list['content_pause'] = []
-remote_events_list['content_resume'] = []
-remote_events_list['power_reboot'] = []
-remote_events_list['power_on'] = []
-remote_events_list['power_off'] = []
-remote_events_list['lighting_intensity_up'] = []
-remote_events_list['lighting_intensity_down'] = []
-remote_events_list['get_status'] = []
-remote_events_list['all_on'] = []
-remote_events_list['all_off'] = []
-
-local_events_list = {}
-local_events_list['audio_mute'] = []
-local_events_list['audio_unmute'] = []
-local_events_list['audio_volume_up'] = []
-local_events_list['audio_volume_down'] = []
-local_events_list['display_on'] = []
-local_events_list['display_off'] = []
-local_events_list['content_pause'] = []
-local_events_list['content_resume'] = []
-local_events_list['power_reboot'] = []
-local_events_list['power_on'] = []
-local_events_list['power_off'] = []
-local_events_list['lighting_intensity_up'] = []
-local_events_list['lighting_intensity_down'] = []
-local_events_list['get_status'] = []
-local_events_list['all_on'] = []
-local_events_list['all_off'] = []
-
-#local_events_list = remote_actions_list.copy()
 remote_events_list = remote_actions_list.copy()
+local_events_list = remote_actions_list.copy()
 
 # Parameters that appear in the parameter dialog. Others can be addded and taken away.
 # Any changes must also be added to the initMeber() function. These are generic ACMI parameters 
@@ -87,8 +51,8 @@ param_members = Parameter({'title': 'Members', 'schema':
                               'Audio': {'title': 'Audio', 'type': 'object', 'order': 3, 'properties': 
                                         {'mute': {'type': 'boolean', 'order': 1, 'title': 'mute'},
                                          'unmute': {'type': 'boolean', 'order': 2, 'title': 'unmute'},
-                                         'volume_up': {'type': 'boolean', 'order': 3, 'title': 'volume_up'},
-                                         'volume_down': {'type': 'boolean', 'order': 3, 'title': 'volume_down'},
+                                         'volumeUp': {'type': 'boolean', 'order': 3, 'title': 'volumeUp'},
+                                         'volumeDown': {'type': 'boolean', 'order': 3, 'title': 'volumeDown'},
                                         }},
                               'Display': {'title': 'Display', 'type': 'object', 'order': 4, 'properties': 
                                           {'on': {'type': 'boolean', 'order': 1, 'title': 'on'},
@@ -99,11 +63,11 @@ param_members = Parameter({'title': 'Members', 'schema':
                                            'resume': {'type': 'boolean', 'order': 2, 'title': 'resume'},
                                           }},
                               'Lighting': {'title': 'Lighting', 'type': 'object', 'order': 6, 'properties': 
-                                           {'intensity_up': {'type': 'boolean', 'order': 1, 'title': 'intensity_up'},
-                                            'intensity_down': {'type': 'boolean', 'order': 1, 'title': 'intensity_down'},
+                                           {'intensityUp': {'type': 'boolean', 'order': 1, 'title': 'intensityUp'},
+                                            'intensityDown': {'type': 'boolean', 'order': 1, 'title': 'intensityDown'},
                                            }},
                               'Status': {'title': 'Status', 'type': 'object', 'order': 7, 'properties': 
-                                         {'get_status': {'type': 'boolean', 'order': 1, 'title': 'status'},
+                                         {'getStatus': {'type': 'boolean', 'order': 1, 'title': 'status'},
                                          }},
                              }}}})
 
@@ -116,119 +80,123 @@ def call_remote_action(simple_name_action):
        print str(simple_name_action)
        lookup_remote_action(simple_name_action).call()
         
-#@local_action({'title': 'all_on'})
-def all_on(arg = None):
+#@local_action({'title': 'allOn'})
+def allOn(arg = None):
     print 'Action all_on requested.'
-    display_on()
+    displayOn()
     audio_unmute()
     power_on()
     
-#@local_action({'title': 'all_off'})
-def all_off(arg = None):
+#@local_action({'title': 'allOff'})
+def allOff(arg = None):
     print 'Action all_on requested.'
     display_off()
     audio_mute()
     power_off()    
     
-#@local_action({'Display': 'display_on'})
-def display_on(arg = None):
+#@local_action({'Display': 'displayOn'})
+def displayOn(arg = None):
     print 'Action Display:on requested.'
-    for remote_action in remote_actions_list['display_on']:
+    for remote_action in remote_actions_list['displayOn']:
         call_remote_action(remote_action)
 
-#@local_action({'Display': 'display_off'})        
-def display_off(arg = None):
+#@local_action({'Display': 'displayOff'})        
+def displayOff(arg = None):
     print 'Action Display:off requested.'
-    for remote_action in remote_actions_list['display_off']:
+    for remote_action in remote_actions_list['displayOff']:
         call_remote_action(remote_action)
 
         
-#@local_action({'Content': 'content_pause'})
-def content_pause(arg = None):
+#@local_action({'Content': 'contentPause'})
+def contentPause(arg = None):
     print 'Action Content:pause requested.'
-    for remote_action in remote_actions_list['content_pause']:
+    for remote_action in remote_actions_list['contentPause']:
         call_remote_action(remote_action)
 
         
-#@local_action({'Content': 'content_resume'})        
-def content_resume(arg = None):
+#@local_action({'Content': 'contentResume'})        
+def contentResume(arg = None):
     print 'Action Content:resume requested.'
-    for remote_action in remote_actions_list['content_resume']:
+    for remote_action in remote_actions_list['contentResume']:
         call_remote_action(remote_action)
 
         
-#@local_action({'Audio': 'audio_mute'})        
-def audio_mute(arg = None):
+#@local_action({'Audio': 'audioMute'})        
+def audioMute(arg = None):
     print 'Action Mute requested.'
-    for remote_action in remote_actions_list['audio_mute']:
+    for remote_action in remote_actions_list['audioMute']:
         call_remote_action(remote_action)
 
         
-def audio_unmute(arg = None):
+def audioUnmute(arg = None):
     print 'Action Unmute requested.'
-    for remote_action in remote_actions_list['audio_unmute']:
+    for remote_action in remote_actions_list['audioUnmute']:
         call_remote_action(remote_action)
 
         
-def audio_volume_up(arg = None):
+def audioVolumeUp(arg = None):
     print 'Action volume up 5% requested.'
-    for remote_action in remote_actions_list['audio_volume_up']:
+    for remote_action in remote_actions_list['audioVolumeUp']:
         call_remote_action(remote_action)
 
-def audio_volume_down(arg = None):
+def audioVolumeDown(arg = None):
     print 'Action volume down 5% requested.'
-    for remote_action in remote_actions_list['audio_volume_down']:
+    for remote_action in remote_actions_list['audioVolumeDown']:
         call_remote_action(remote_action)
 
         
-def power_reboot(arg = None):
+def powerReboot(arg = None):
     print 'Action Power:Reboot requested.'
-    for remote_action in remote_actions_list['power_reboot']:
+    for remote_action in remote_actions_list['powerReboot']:
         call_remote_action(remote_action)
 
         
-def power_on(arg = None):
+def powerOn(arg = None):
     print 'Action Power:On requested.'
-    for remote_action in remote_actions_list['power_on']:
+    for remote_action in remote_actions_list['powerOn']:
         call_remote_action(remote_action)
 
         
-def power_off(arg = None):
+def powerOff(arg = None):
     print 'Action Power:Off requested.'
-    for remote_action in remote_actions_list['power_off']:
+    for remote_action in remote_actions_list['powerOff']:
         call_remote_action(remote_action)
 
         
-def lighting_intensity_up(arg = None):
+def lightingIntensityUp(arg = None):
     print 'Action Lighting:intensity_up requested.'
-    for remote_action in remote_actions_list['lighting_intensity_up']:
+    for remote_action in remote_actions_list['lightingIntensityUp']:
         call_remote_action(remote_action)
 
         
-def lighting_intensity_down(arg = None):
+def lightingIntensityDown(arg = None):
     print 'Action Lighting:intensity_down requested.'
-    for remote_action in remote_actions_list['lighting_intensity_down']:
+    for remote_action in remote_actions_list['lightingIntensityDown']:
         call_remote_action(remote_action)
 
         
-def get_status(arg = None):
+def getStatus(arg = None):
     print 'Event Status:Status requested.'
     message = ''
     status = '0'
-    for remote_event in remote_events_list['get_status']:
+    for remote_event in remote_events_list['getStatus']:
         print str(remote_event)
 
-        if(lookup_local_event(remote_event).getArg() != None):
-            remote_content = {'status_code': lookup_local_event(remote_event).getArg().get('status_code'), 
-                              'message': lookup_local_event(remote_event).getArg().get('message'), 
-                              'time': lookup_local_event(remote_event).getArg().get('time')}
-            lookup_local_event(remote_event).emit(lookup_local_event(remote_event).getArg())
+        if(lookup_remote_event(remote_event).getArg() != None):
+            remote_content = {'status_code': lookup_remote_event(remote_event).getArg().get('status_code'), 
+                              'message': lookup_remote_event(remote_event).getArg().get('message'), 
+                              'time': lookup_remote_event(remote_event).getArg().get('time')}
+            
+            lookup_local_event(remote_event).emit(remote_content)
 
-            if(lookup_local_event(remote_event).getArg().get('message') != 'ok'):
+            if(lookup_remote_event(remote_event).getArg().get('message') != 'ok'):
                 if(message != ''):
                     message += ' && ' 
-                message += lookup_local_event(remote_event).getArg().get('message')
+                message += lookup_remote_event(remote_event).getArg().get('message')
                 status = '1'
+        else:
+            print('Could not find local event ' + remote_event)
+            
         if(message != ''):
             aggregate_message = {'status_code': status, 'message': os.path.basename(os.getcwd()) +': ' + message, 'time': str(date_now())}
             lookup_local_event(local_status_name).emit(aggregate_message)
@@ -242,26 +210,26 @@ def get_status(arg = None):
 # is created.
 
 #[0] = group, [1] = action, [2] = event/signal/action name, [3] = handler function for action
-action_events_list = [('Power', 'reboot', 'power_reboot', power_reboot),
-                      ('Power', 'on', 'power_on', power_on),
-                      ('Power', 'off', 'power_off', power_off),
-                      ('Audio', 'mute', 'audio_mute', audio_mute),
-                      ('Audio', 'unmute', 'audio_unmute', audio_unmute),
-                      ('Audio', 'volume_up', 'audio_volume_up', audio_volume_up),
-                      ('Audio', 'volume_down', 'audio_volume_down', audio_volume_down),
-                      ('Display', 'on', 'display_on', display_on),
-                      ('Display', 'off', 'display_off', display_off),
-                      ('Content', 'resume', 'content_resume', content_resume),
-                      ('Content', 'pause', 'content_pause', content_pause),
-                      ('Lighting', 'intensity_up', 'lighting_intensity_up', lighting_intensity_up),
-                      ('Lighting', 'intensity_down', 'lighting_intensity_down', lighting_intensity_down),
-                      ('Status', '', 'get_status', get_status),
-                      ('', '', 'all_on', all_on),
-                      ('', '', 'all_off', all_off)]
+action_events_list = [('Power', 'reboot', 'powerReboot', powerReboot),
+                      ('Power', 'on', 'powerOn', powerOn),
+                      ('Power', 'off', 'powerOff', powerOff),
+                      ('Audio', 'mute', 'audioMute', audioMute),
+                      ('Audio', 'unmute', 'audioUnmute', audioUnmute),
+                      ('Audio', 'volumeUp', 'audioVolumeUp', audioVolumeUp),
+                      ('Audio', 'volumeDown', 'audioVolumeDown', audioVolumeDown),
+                      ('Display', 'on', 'displayOn', displayOn),
+                      ('Display', 'off', 'displayOff', displayOff),
+                      ('Content', 'resume', 'contentResume', contentResume),
+                      ('Content', 'pause', 'contentPause', contentPause),
+                      ('Lighting', 'intensityUp', 'lightingIntensityUp', lightingIntensityUp),
+                      ('Lighting', 'intensityDown', 'lightingIntensityDown', lightingIntensityDown),
+                      ('Status', '', 'getStatus', getStatus),
+                      ('', '', 'allOn', allOn),
+                      ('', '', 'allOff', allOff)]
         
 
 # This creates the local status event. This will aggregate all the member statuses.
-local_status_name = os.path.basename(os.getcwd()) + '_get_status'
+local_status_name = os.path.basename(os.getcwd()) + 'getStatus'
 status_metadata = {'Group': 'Status', 'schema': {'title': local_status_name, 'type': 'array', 'items': {'type': 'object', 'properties': {
   'status_code': {'type': 'string'},
    'message': {'type': 'string'},
@@ -271,6 +239,7 @@ status_metadata = {'Group': 'Status', 'schema': {'title': local_status_name, 'ty
 print 'creating local event... '
 print 'Name: ' + local_status_name
 print 'Metadata: ' + str(status_metadata)
+
 create_local_event(local_status_name, status_metadata)
 
 
@@ -280,7 +249,7 @@ def initMember(memberInfo):
     for action_event in action_events_list:
         if(memberInfo.get(action_event[0]) != None):
             remote_name = action_event[2]
-            remote_title = memberInfo.get('name') + "_" + remote_name
+            remote_title = memberInfo.get('name') + remote_name
             if(action_event[0] == 'Status'):
                 remote_metadata = {'Group': action_event[0], 'schema': {'title': remote_title, 'type': 'array', 'items': {'type': 'object', 'properties': {
                         'status_code': {'type': 'string'},
@@ -317,7 +286,7 @@ def init_scheduler_and_local_actions():
     for action in action_events_list:
         if(lookup_parameter('scheduler') != None):
             remote_name = action[2]
-            remote_title = os.path.basename(os.getcwd()) + "_" + remote_name
+            remote_title = os.path.basename(os.getcwd()) + remote_name
             remote_metadata = {'Group': action[0], 'title': remote_title}
             print 'Creating remote event: ' + remote_title + ' for: ' + lookup_parameter('scheduler')
             #remote_events_list[remote_name].append(create_remote_event(remote_title , action[3], remote_metadata, lookup_parameter('scheduler'), remote_title))

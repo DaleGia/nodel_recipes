@@ -15,22 +15,23 @@ import os
 nodes = os.listdir(os.path.dirname(os.getcwd()))
 # Initialises the remote actions dict list
 remote_actions_list = {}
-remote_actions_list['audio_mute'] = []
-remote_actions_list['audio_unmute'] = []
-remote_actions_list['audio_volume_up'] = []
-remote_actions_list['audio_volume_down'] = []
-remote_actions_list['display_on'] = []
-remote_actions_list['display_off'] = []
-remote_actions_list['content_pause'] = []
-remote_actions_list['content_resume'] = []
-remote_actions_list['power_reboot'] = []
-remote_actions_list['power_on'] = []
-remote_actions_list['power_off'] = []
-remote_actions_list['lighting_intensity_up'] = []
-remote_actions_list['lighting_intensity_down'] = []
-remote_actions_list['status'] = []
-remote_actions_list['all_on'] = []
-remote_actions_list['all_off'] = []
+remote_actions_list['audioMute'] = []
+remote_actions_list['audioUnmute'] = []
+remote_actions_list['audioVolumeUp'] = []
+remote_actions_list['audioVolumeDown'] = []
+remote_actions_list['displayOn'] = []
+remote_actions_list['displayOff'] = []
+remote_actions_list['contentPause'] = []
+remote_actions_list['contentResume'] = []
+remote_actions_list['powerReboot'] = []
+remote_actions_list['powerOn'] = []
+remote_actions_list['powerOff'] = []
+remote_actions_list['lightingIntensityUp'] = []
+remote_actions_list['lightingIntensityDown'] = []
+remote_actions_list['getStatus'] = []
+remote_actions_list['allOn'] = []
+remote_actions_list['allOff'] = []
+
 
 local_events_list = remote_actions_list.copy()
 remote_events_list = remote_actions_list.copy()
@@ -42,22 +43,22 @@ remote_events_list = remote_actions_list.copy()
 # is created.
 
 #[0] = group, [1] = action, [2] = event/signal/action name, [3] = handler function for action
-action_events_list = ['power_reboot',
-                      'power_on',
-                      'power_off',
-                      'audio_mute',
-                      'audio_unmute',
-                      'audio_volume_up',
-                      'audio_volume_down',
-                      'display_on',
-                      'display_off',
-                      'content_resume',
-                      'content_pause',
-                      'lighting_intensity_up',
-                      'lighting_intensity_down',
-                      'get_status',
-                      'all_on',
-                      'all_off']
+action_events_list = ['powerReboot',
+                      'powerOn',
+                      'powerOff',
+                      'audioMute',
+                      'audioUnmute',
+                      'audioVolume_up',
+                      'audioVolume_down',
+                      'displayOn',
+                      'displayOff',
+                      'contentResume',
+                      'contentPause',
+                      'lightingIntensityUp',
+                      'lightingIntensityDown',
+                      'getStatus',
+                      'allOn',
+                      'allOff']
 ### Parameters used by this Node
 param_schedule = Parameter({ "title" : "Schedule", "group" : "Schedule", "schema": 
                               { "type": "array", "title": "Schedule", "required": False, "items": 
@@ -75,7 +76,7 @@ param_schedule = Parameter({ "title" : "Schedule", "group" : "Schedule", "schema
         
 
 # This creates the local status event. This will aggregate all the member statuses.
-local_status_name = os.path.basename(os.getcwd()) + '_get_status'
+local_status_name = os.path.basename(os.getcwd()) + 'getStatus'
 status_metadata = {'Group': 'Status', 'schema': {'title': local_status_name, 'type': 'array', 'items': {'type': 'object', 'properties': {
   'status_code': {'type': 'string'},
    'message': {'type': 'string'},
@@ -96,8 +97,8 @@ def init_local_events():
         for schedule in param_schedule:
             node = str(schedule.get('node'))
             event = str(schedule.get('event'))
-            metadata = {'Group': 'Schedule signal', 'title': node+'_'+event}
-            create_local_event(node+'_'+event, metadata)
+            metadata = {'Group': 'Schedule signal', 'title': node+event}
+            create_local_event(node+event, metadata)
 def cleanup():
   sched.shutdown()
 
