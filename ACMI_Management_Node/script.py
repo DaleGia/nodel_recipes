@@ -82,10 +82,11 @@ def emitLocalEvent():
 		if(event != None):
 			remoteEvent = lookup_remote_event(event)
 			if(remoteEvent != None):
-				metadata['message'] += event + ': ' + remoteEvent.getArg().get('message') + ' - '
-				metadata['timestamp'] = date_now()
-				if(remoteEvent.getArg().get('code') != 0):
-					metadata['code'] = remoteEvent.getArg().get('code')
+				if(remoteEvent.getArg() != None):
+					metadata['message'] += event + ': ' + remoteEvent.getArg().get('message') + ' - '
+					metadata['timestamp'] = date_now()
+					if(remoteEvent.getArg().get('code') != 0):
+						metadata['code'] = remoteEvent.getArg().get('code')
 	lookup_local_event('allNodeEvents').emit(metadata)
 
 def initialiseNodes():

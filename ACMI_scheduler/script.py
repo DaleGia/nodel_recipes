@@ -65,7 +65,6 @@ param_schedule = Parameter({ "title" : "Schedule", "group" : "Schedule", "schema
                                 { "type": "object", "required": False, "properties": 
                                   { "cron": { "type": "string", "format": "cron", "required": True, "title": "Cron", "desc": "Format: <minute> <hour> <day> <month> <day of week>", "order": 1}, 
                                     "except": { "type":"array", "required":False, "order": 2, "title":"Except", "items": { "type":"object", "required":False, "properties":{ "date": { "type":"string", "format":"date", "title":"Date", "required":False } } } }, 
-                                    "node": { "type": "string", "enum": nodes, "required": True, "title": "Node", "order": 3}, 
                                     "event": { "type": "string", "enum": action_events_list, "required": True, "title": "Event", "order": 4 }, 
                                     "note": { "type": "string", "format": "long", "required": False, "title": "Notes", "desc": "Schedule notes","order": 5 } 
                                   } 
@@ -93,12 +92,13 @@ logging.basicConfig()
 sched = Scheduler(misfire_grace_time=10)
 
 def init_local_events():
+    create_local_event("Errors,  {'title': Errors})
     if(param_schedule != None):
         for schedule in param_schedule:
-            node = str(schedule.get('node'))
             event = str(schedule.get('event'))
-            metadata = {'Group': 'Schedule signal', 'title': node+event}
-            create_local_event(node+event, metadata)
+            metadata = {'Group': 'Schedule Event', 'title': event}
+            if(lookup_local_event(event) == None):
+                create_local_event(event, metadata)
 def cleanup():
   sched.shutdown()
 
@@ -114,13 +114,11 @@ def callevent(event, dateexcept):
   if(not date.today() in dates):
     print 'calling: '+event
     try:
-      if(lookup_local_event(event) != None):
-          lookup_local_event(event).emit() 
-     # globals()["local_event_"+event].emit()
+      lookup_local_event(event).emit() 
     except:
       print 'error calling: '+event
-      # Redo this in status later
-      #local_event_Error.emit('error calling: '+event)
+      if(lookup_local_event("Errors") != None):
+        lookup_local_event("Errors").emit('error calling: '+event)
   else:
     print 'excluding: '+event
 
@@ -134,19 +132,17 @@ def main():
   if(param_schedule):
     for schedule in param_schedule:
       if not _cron_re.match(schedule['cron']):
-        # add this to the status event later
-        #local_event_Error.emit('Invalid cron string')
+        if(lookup_local_event("Errors") != None):
+          lookup_local_event("Errors").emit('Invalid cron string')
         print 'Invalid cron string'
       else:
         split = _split_re.split(schedule['cron'])
         cron = dict(itertools.izip(_sched_seq, split))
-        event = schedule['node'] + '_' + schedule['event']
+        event = schedule['event']
         if('except' in schedule):
           dates = ",".join([x['date'] for x in schedule['except'] if 'date' in x])
         else:
           dates = ''
-        #print dates
         expr = "sched.add_cron_job(callevent, args=['"+event+"','"+dates+"'], **cron)"
-        #print 'expr:', expr
         eval(expr)
   print 'Nodel script started.'
