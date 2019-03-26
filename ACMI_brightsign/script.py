@@ -10,9 +10,6 @@ nodes = os.listdir(os.path.dirname(os.getcwd()))
 ### Parameters used by this Node. These will be the options available to the user.
 param_ipAddress = Parameter({'title': 'IP Address', 'schema': {"type":"string", "required": True}})   
 param_port = Parameter({'title': 'Port', 'schema': {"type":"string", "required": True}}) 
-param_scheduler = Parameter({'title': 'Scheduler Name', 'schema': 
-                             {"type":"string", "required": False, 'enum': nodes},
-                             })
 
 #Local actions. Group nodes will call these local_actions when remotely binded to them. These actions
 #are the functions that actually 'do something'
@@ -80,20 +77,6 @@ action_events_list = [('Power', 'reboot', 'powerReboot', powerReboot),
 
 
 ### Functions used by this Node to perform whatever tasks it needs to do.
-# This function initialises all the local actions, and remote events that potentially tie a scheduler node
-# to this node.
-def init_scheduler():
-    for action in action_events_list:
-        if(lookup_parameter('scheduler') != None):
-            remote_name = action[2]
-            remote_title = os.path.basename(os.getcwd()) + remote_name
-            remote_metadata = {'Group': action[0], 'title': remote_title}
-            print 'Creating remote event: ' + remote_title + ' for: ' + lookup_parameter('scheduler')
-            remote_events_list[remote_name].append(remote_title)
-            create_remote_event(remote_title , action[3], remote_metadata, lookup_parameter('scheduler'), remote_title)
-        else:
-            print 'No scheduler specified. Not creating remote scheduler events'
-
 
 def send_udp_string(msg):
     #open socket
@@ -144,6 +127,5 @@ Timer(lambda: lookup_local_event(local_status_name).emit(getStatus()), 2, 1)
 ### Main
 def main(arg = None):
   # Start your script here.
-  init_scheduler()
   print 'Node started'
  
