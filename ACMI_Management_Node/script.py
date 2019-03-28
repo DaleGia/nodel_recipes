@@ -107,7 +107,19 @@ def initialiseNodes():
 						for remoteAction in remoteActionList[action.get('localAction')] or []:
 							if(lookup_remote_action(remoteAction) != None):
 								lookup_remote_action(remoteAction).call()
-			create_local_action(action.get('localAction'), triggerRemoteActions, {'Group': action.get('localActionGroup')})
+                                
+			def remoteActionTriggerHandlerFactory(actionParameter):
+				print('calling action handler factory')
+				def f(arg=None):
+					for node in lookup_parameter('memberNodes') or []:
+						if(node != None):
+							remoteActionName = node.get('memberNode') + action.get('localAction')
+							for remoteAction in remoteActionList[action.get('localAction')] or []:
+								if(lookup_remote_action(remoteAction) != None):
+									lookup_remote_action(remoteAction).call()
+				return f
+			#create_local_action(action.get('localAction'), triggerRemoteActions, {'Group': action.get('localActionGroup')})
+			create_local_action(action.get('localAction'), remoteActionTriggerHandlerFactory(action), {'Group': action.get('localActionGroup')})
 
 	# Handles the creation of the local events
 	for event in lookup_parameter('localEvents') or []:
