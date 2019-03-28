@@ -57,6 +57,11 @@ def DISPLAYOFF(arg = None):
 def REBOOT(arg = None):
   print 'Action Audio:REBOOT requested.'
   send_udp_string('REBOOT')
+  
+@local_action({'group': 'Status', 'title': 'getStatus'})
+def getStatus(arg = None):
+  print 'Action Status:getStatus requested.'
+  getStatus()
 
 ### Functions used by this Node to perform whatever tasks it needs to do.
 
@@ -87,11 +92,11 @@ def getStatus(arg = None):
     if(param_ipAddress != None):
         ping_response = os.system("ping -n 1 " + param_ipAddress)
     else:
-        return {'status_code': '1', 'message': 'No IP Address specified for: ' + os.path.basename(os.getcwd()), 'time': str(date_now())}
+        return {'code': '1', 'message': 'No IP Address specified for: ' + os.path.basename(os.getcwd()), 'time': str(date_now())}
     if(ping_response == 0):
-        return {'status_code': '0','message': 'ok', 'time': str(date_now())}
+        return {'code': '0','message': 'ok', 'time': str(date_now())}
     else:
-        return {'status_code': '1', 'message': 'Cannot reach ' + os.path.basename(os.getcwd()) + ' with ping at ' + param_ipAddress, 'time': str(date_now())}
+        return {'code': '1', 'message': 'Cannot reach ' + os.path.basename(os.getcwd()) + ' with ping at ' + param_ipAddress, 'time': str(date_now())}
 
 ### Local events this Node provides. The only event should be the status at ACMI.
 # This status will be a message. If all is okay, the status message will be 'ok'.
@@ -99,7 +104,7 @@ def getStatus(arg = None):
 local_status_name = os.path.basename(os.getcwd()) + 'getStatus'
 
 create_local_event(local_status_name, {'Group': 'Status', 'schema': {'title': local_status_name, 'type': 'object', 'properties':{
-      'status_code': {'type': 'string'},
+      'code': {'type': 'string'},
       'message': {'type': 'string'},
       'time': {'type': 'string'}
 }}})
