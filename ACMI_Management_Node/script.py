@@ -100,21 +100,21 @@ def initialiseNodes():
 	for action in lookup_parameter('localActions') or []:
 		if(action != None):
 			# Each local action should call all remote actions with the same name
-			def triggerRemoteActions(arg):
-				for node in lookup_parameter('memberNodes') or []:
-					if(node != None):
-						remoteActionName = node.get('memberNode') + action.get('localAction')
-						for remoteAction in remoteActionList[action.get('localAction')] or []:
-							if(lookup_remote_action(remoteAction) != None):
-								lookup_remote_action(remoteAction).call()
+#			def triggerRemoteActions(arg):
+#				for node in lookup_parameter('memberNodes') or []:
+#					if(node != None):
+#						remoteActionName = node.get('memberNode') + action.get('localAction')
+#						for remoteAction in remoteActionList[action.get('localAction')] or []:
+#							if(lookup_remote_action(remoteAction) != None):
+#								lookup_remote_action(remoteAction).call()
                                 
 			def remoteActionTriggerHandlerFactory(actionParameter):
 				print('calling action handler factory')
 				def f(arg=None):
 					for node in lookup_parameter('memberNodes') or []:
 						if(node != None):
-							remoteActionName = node.get('memberNode') + action.get('localAction')
-							for remoteAction in remoteActionList[action.get('localAction')] or []:
+							remoteActionName = node.get('memberNode') + actionParameter.get('localAction')
+							for remoteAction in remoteActionList[actionParameter.get('localAction')] or []:
 								if(lookup_remote_action(remoteAction) != None):
 									lookup_remote_action(remoteAction).call()
 				return f
