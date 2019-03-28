@@ -1,5 +1,5 @@
 '''A Template for a Management Node'''
-
+import os
 param_localActions = Parameter({'title': 'Local Actions', 'order': 1, 'schema': 
 	{'type': 'array', 'items': 
 		{'type': 'object', 'properties': 
@@ -93,7 +93,8 @@ def initialiseNodes():
 	# Creates local event to aggregate all other events in to.
 	metadata = eventMetadataTemplate.copy()
 	metadata['schema']['title'] = 'All Node Events'
-	create_local_event('allNodeEvents', metadata)
+	local_status_name = os.path.basename(os.getcwd()) + 'allNodeEvents'
+	create_local_event(local_status_name, metadata)
 
 	# Handles the creation of the local actions
 	for action in lookup_parameter('localActions') or []:
