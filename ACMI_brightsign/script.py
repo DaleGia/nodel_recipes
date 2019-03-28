@@ -13,68 +13,50 @@ param_port = Parameter({'title': 'Port', 'schema': {"type":"string", "required":
 
 #Local actions. Group nodes will call these local_actions when remotely binded to them. These actions
 #are the functions that actually 'do something'
-@local_action({'group': 'Content', 'title': 'contentResume'})
-def contentResume(arg = None):
+@local_action({'group': 'Content', 'title': 'RESUME'})
+def RESUME(arg = None):
   print 'Action Content:RESUME requested.'
   send_udp_string('RESUME')
 
-@local_action({'group': 'Content', 'title': 'contentPause'})
-def contentPause(arg = None):
+@local_action({'group': 'Content', 'title': 'PAUSE'})
+def PAUSE(arg = None):
   print 'Action Content:PAUSE requested.'
   send_udp_string('PAUSE')
   
-@local_action({'group': 'Audio', 'title': 'audioMute'})
-def audioMute(arg = None):
+@local_action({'group': 'Audio', 'title': 'MUTE'})
+def MUTE(arg = None):
   print 'Action Audio:MUTE requested.'
   send_udp_string('MUTE')
 
-@local_action({'group': 'Audio', 'title': 'audioUnmute'})
-def audioUnmute(arg = None):
+@local_action({'group': 'Audio', 'title': 'UNMUTE'})
+def UNMUTE(arg = None):
   print 'Action Audio:UNMUTE requested.'
   send_udp_string('UNMUTE')
 
-@local_action({'group': 'Audio', 'title': 'audioVolumeUp'})
-def audioVolumeUp(arg = None):
+@local_action({'group': 'Audio', 'title': 'VOLUP'})
+def VOLUP(arg = None):
   print 'Action Audio:VOLUP requested.'
   send_udp_string('VOLUP')
   
-@local_action({'group': 'Audio', 'title': 'audioVolumeDown'})
-def audioVolumeDown(arg = None):
+@local_action({'group': 'Audio', 'title': 'VOLDOWN'})
+def VOLDOWN(arg = None):
   print 'Action Audio:VOLDOWN requested.'
   send_udp_string('VOLDOWN')
   
-@local_action({'group': 'Display', 'title': 'displayOn'})
-def displayOn(arg = None):
+@local_action({'group': 'Display', 'title': 'DISPLAYON'})
+def DISPLAYON(arg = None):
   print 'Action Display:ON requested.'
   send_udp_string('ON')
   
-@local_action({'group': 'Display', 'title': 'displayOff'})
-def displayOff(arg = None):
+@local_action({'group': 'Display', 'title': 'DISPLAYOFF'})
+def DISPLAYOFF(arg = None):
   print 'Action Display:OFF requested.'
   send_udp_string('OFF')
 
-@local_action({'group': 'Power', 'title': 'powerReboot'})
-def powerReboot(arg = None):
+@local_action({'group': 'Power', 'title': 'REBOOT'})
+def REBOOT(arg = None):
   print 'Action Audio:REBOOT requested.'
   send_udp_string('REBOOT')
-  
-@local_action({'group': 'Status', 'title': 'getStatus'})
-def getStatus(arg = None):
-  print 'Action Status:getStatus requested.'
-  getStatus()
-  
-#[0] = group, [1] = action, [2] = event/signal/action name, [3] = handler function for action
-action_events_list = [('Power', 'reboot', 'powerReboot', powerReboot),
-                      ('Audio', 'mute', 'audioMute', audioMute),
-                      ('Audio', 'unmute', 'audioUnmute', audioUnmute),
-                      ('Audio', 'volumeUp', 'audioVolumeUp', audioVolumeUp),
-                      ('Audio', 'volumeDown', 'audioVolumeDown', audioVolumeDown),
-                      ('Display', 'on', 'displayOn', displayOn),
-                      ('Display', 'off', 'displayOff', displayOff),
-                      ('Content', 'resume', 'contentResume', contentResume),
-                      ('Content', 'pause', 'contentPause', contentPause),
-                      ('Status', '', 'getStatus', getStatus),]
-
 
 ### Functions used by this Node to perform whatever tasks it needs to do.
 
@@ -121,7 +103,7 @@ create_local_event(local_status_name, {'Group': 'Status', 'schema': {'title': lo
       'message': {'type': 'string'},
       'time': {'type': 'string'}
 }}})
-Timer(lambda: lookup_local_event(local_status_name).emit(getStatus()), 2, 1)
+Timer(lambda: lookup_local_event(local_status_name).emit(getStatus()), 60, 1)
 
 
 ### Main
