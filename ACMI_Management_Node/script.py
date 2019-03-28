@@ -75,6 +75,7 @@ eventMetadataTemplate = {
 
 remoteActionList = {}
 remoteEventList = []
+local_status_name = os.path.basename(os.getcwd()) + 'allNodeEvents'
 
 def emitLocalEvent():
 	metadata = {'message' : '', 'code': 0, 'timestamp': ''}
@@ -87,13 +88,12 @@ def emitLocalEvent():
 					metadata['timestamp'] = date_now()
 					if(remoteEvent.getArg().get('code') != 0):
 						metadata['code'] = remoteEvent.getArg().get('code')
-	lookup_local_event('allNodeEvents').emit(metadata)
+	lookup_local_event(local_status_name).emit(metadata)
 
 def initialiseNodes():
 	# Creates local event to aggregate all other events in to.
 	metadata = eventMetadataTemplate.copy()
 	metadata['schema']['title'] = 'All Node Events'
-	local_status_name = os.path.basename(os.getcwd()) + 'allNodeEvents'
 	create_local_event(local_status_name, metadata)
 
 	# Handles the creation of the local actions
